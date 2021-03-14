@@ -38,20 +38,11 @@ public class EntryPointServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String actionParam = request.getParameter("action");
-		boolean userIsNotAuthenticated = request.getSession().getAttribute("authUser") == null;
-		boolean actionIsProtected = !actionParam.equals("authenticate") && !actionParam.equals("login");
-		
-		if (userIsNotAuthenticated && actionIsProtected) {
-			handleResponse("redirect:entry-point?action=login", request, response);
-			return;
-		}
-		
 		try {
+			String actionParam = request.getParameter("action");
 			Action action = getRouteAction(actionParam);
 			String path = action.call(request, response);
 			handleResponse(path, request, response);
-
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

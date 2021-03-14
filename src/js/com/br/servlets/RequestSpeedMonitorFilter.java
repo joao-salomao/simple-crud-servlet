@@ -9,7 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebFilter;
 
 @WebFilter("/entry-point")
-public class RequestSpeedMonitor implements Filter {
+public class RequestSpeedMonitorFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
