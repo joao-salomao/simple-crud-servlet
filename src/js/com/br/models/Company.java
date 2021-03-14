@@ -1,4 +1,4 @@
-package js.com.br;
+package js.com.br.models;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
