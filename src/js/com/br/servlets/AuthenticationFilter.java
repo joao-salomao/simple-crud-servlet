@@ -16,13 +16,14 @@ public class AuthenticationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
 			throws IOException, ServletException {
+		System.out.println("AuthenticationFilter");
 		
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		
 		String actionParam = request.getParameter("action");
 		boolean userIsNotAuthenticated = request.getSession().getAttribute("authUser") == null;
-		boolean actionIsProtected = !actionParam.equals("authenticate") && !actionParam.equals("login");
+		boolean actionIsProtected = actionParam != null && !actionParam.equals("login") && !actionParam.equals("authenticate");
 
 		if (userIsNotAuthenticated && actionIsProtected) {
 			response.sendRedirect("entry-point?action=login");

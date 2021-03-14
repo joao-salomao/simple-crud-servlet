@@ -1,26 +1,18 @@
 package js.com.br.servlets;
 
+import java.util.HashMap;
 import java.io.IOException;
-
-import javax.servlet.RequestDispatcher;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletRequest;
+import js.com.br.controllers.Action;
+import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import java.util.HashMap;
-
-import js.com.br.controllers.Action;
-import js.com.br.controllers.CreateNewCompany;
-import js.com.br.controllers.DeleteCompany;
-import js.com.br.controllers.Show;
-import js.com.br.controllers.UpdateCompany;
-
-@WebServlet("/entry-point")
-public class EntryPointServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class ControllerFilter implements Filter {
 
 	private static HashMap<String, String> routesMapper = new HashMap<String, String>();
 
@@ -36,16 +28,26 @@ public class EntryPointServlet extends HttpServlet {
 		routesMapper.put("update-form", "UpdateCompanyForm");
 	}
 
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	@Override
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+			throws IOException, ServletException {
+		System.out.println("ControllerFilter");
+
+		HttpServletRequest request = (HttpServletRequest) servletRequest;
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		try {
 			String actionParam = request.getParameter("action");
+			if (actionParam == null) {
+				actionParam = "login";
+			}
+
 			Action action = getRouteAction(actionParam);
 			String path = action.call(request, response);
 			handleResponse(path, request, response);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
+
 	}
 
 	private Action getRouteAction(String action) throws Exception {
